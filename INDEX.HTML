@@ -1,0 +1,88 @@
+// Fully Interactive Horror Game (PC & Mobile Compatible)
+
+// Game setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+document.body.style.margin = "0";
+document.body.style.overflow = "hidden";
+
+// Load assets (images, sounds)
+const assets = {
+    bus: new Image(),
+    cloakedMan: new Image(),
+    monster: new Image(),
+    school: new Image(),
+    fireflies: new Image(),
+};
+assets.bus.src = "bus_crash.png";
+assets.cloakedMan.src = "cloaked_man.png";
+assets.monster.src = "monster.png";
+assets.school.src = "haunted_school.png";
+assets.fireflies.src = "fireflies.png";
+
+const sounds = {
+    eerieMusic: new Audio("eerie_music.mp3"),
+    screeching: new Audio("screeching.mp3"),
+};
+sounds.eerieMusic.loop = true;
+
+// Game State
+let scene = "intro";
+
+// Draw function
+function drawScene() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (scene === "intro") {
+        ctx.drawImage(assets.bus, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.font = "24px Arial";
+        ctx.fillText("A bus speeds and crashes into a tree...", 50, 50);
+        ctx.fillText("Click to continue", 50, 100);
+    } else if (scene === "talk_cloaked_man") {
+        ctx.drawImage(assets.cloakedMan, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillText("Cloaked Man: 'The best ones may be alive in a yellow place.'", 50, 50);
+        ctx.fillText("Click to respond", 50, 100);
+    } else if (scene === "free_friends") {
+        ctx.fillStyle = "white";
+        ctx.fillText("You freed your friends!", 50, 50);
+        ctx.fillText("Click to continue", 50, 100);
+    } else if (scene === "enter_school") {
+        ctx.drawImage(assets.school, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillText("You enter the haunted school...", 50, 50);
+        ctx.fillText("Click to continue", 50, 100);
+        sounds.eerieMusic.play();
+    } else if (scene === "bathroom") {
+        ctx.fillStyle = "white";
+        ctx.fillText("You hear screeching from the bathroom...", 50, 50);
+        ctx.fillText("Click to continue", 50, 100);
+        sounds.screeching.play();
+    } else if (scene === "final_encounter") {
+        ctx.drawImage(assets.monster, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillText("The cloaked man absorbs the monster...", 50, 50);
+        ctx.fillText("Click to continue", 50, 100);
+    } else if (scene === "clean_end") {
+        ctx.fillStyle = "white";
+        ctx.fillText("Everything is clean. You survived.", 50, 50);
+    }
+}
+
+// Event Listener for Interaction
+canvas.addEventListener("click", function () {
+    if (scene === "intro") scene = "talk_cloaked_man";
+    else if (scene === "talk_cloaked_man") scene = "free_friends";
+    else if (scene === "free_friends") scene = "enter_school";
+    else if (scene === "enter_school") scene = "bathroom";
+    else if (scene === "bathroom") scene = "final_encounter";
+    else if (scene === "final_encounter") scene = "clean_end";
+    drawScene();
+});
+
+// Start the game
+drawScene();
